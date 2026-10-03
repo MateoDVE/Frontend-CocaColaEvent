@@ -15,6 +15,11 @@
       "version": "1.0.0",
       "installedAt": "2026-10-03T02:03:26.990Z",
       "platform": "codex"
+    },
+    "ux": {
+      "version": "2.1.0",
+      "installedAt": "2026-10-03T02:04:41.147Z",
+      "platform": "codex"
     }
   }
 }
