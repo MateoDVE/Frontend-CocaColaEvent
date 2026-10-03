@@ -22,6 +22,7 @@ Documentación funcional y técnica del proyecto. Es la **fuente de verdad** par
 | 12 | [Guía de desarrollo](./12-guia-de-desarrollo.md) | Monorepo, setup local, variables de entorno, convenciones, testing, git | Empieces a programar |
 | 13 | [Decisiones de arquitectura (ADR)](./13-decisiones-de-arquitectura.md) | Registro de decisiones y su justificación | Quieras cambiar una decisión |
 | 14 | [Glosario](./14-glosario.md) | Términos de negocio y técnicos | Dudes de un término |
+| 15 | [Diseño frontend](./15-diseno-frontend.md) | Referencias, alcance y validación de la demo | Revises esta primera implementación |
 
 ## Convenciones de esta documentación
 
