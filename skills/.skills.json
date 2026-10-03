@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "skills": {
+    "anthropic-frontend-design": {
+      "version": "1.0.2",
+      "installedAt": "2026-10-03T01:52:47.529Z",
+      "platform": "codex"
+    },
+    "alirezarezvani-ui-design-system": {
+      "version": "1.0.1",
+      "installedAt": "2026-10-03T01:58:23.906Z",
+      "platform": "codex"
+    }
+  }
+}
