@@ -1,8 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
-import { demoRepository } from "../../shared/demo";
+import { apiRepository } from "../../shared/api";
 export const useMetrics = (id: string) =>
   useQuery({
     queryKey: ["metrics", id],
-    queryFn: () => demoRepository.metrics(id),
+    queryFn: () => apiRepository.metrics(id),
   });
 export { FlowChart } from "./FlowChart";

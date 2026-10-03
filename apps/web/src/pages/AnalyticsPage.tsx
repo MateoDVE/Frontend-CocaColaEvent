@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useQueries } from "@tanstack/react-query";
 import { Download } from "lucide-react";
 import { useEvents } from "../features/event-management";
-import { demoRepository } from "../shared/demo";
+import { apiRepository } from "../shared/api";
 import { es } from "../shared/i18n";
 import { Button, Loading, ErrorState, Empty } from "../shared/ui";
 import { percent, number, downloadCsv } from "../shared/lib";
@@ -13,7 +13,7 @@ export default function AnalyticsPage() {
   const queries = useQueries({
     queries: selected.map((id) => ({
       queryKey: ["metrics", id],
-      queryFn: () => demoRepository.metrics(id),
+      queryFn: () => apiRepository.metrics(id),
     })),
   });
   const ready = queries.every((q) => q.data);

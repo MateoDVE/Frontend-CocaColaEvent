@@ -15,7 +15,8 @@ import {
 import type { EventStatus, Campaign } from "@cocacola-ei/contracts";
 import { useEvent, useDemoMutation } from "../features/event-management";
 import { useProducts } from "../features/catalog";
-import { demoRepository, transitions } from "../shared/demo";
+import { transitions } from "../shared/demo";
+import { apiRepository } from "../shared/api";
 import { StatusBadge } from "../entities/event";
 import { Button, Modal, Loading, ErrorState } from "../shared/ui";
 import { es } from "../shared/i18n";
@@ -59,7 +60,7 @@ export default function EventDetailPage() {
     ev.preventDefault();
     const f = new FormData(ev.currentTarget);
     void act(() =>
-      demoRepository.addActivity(id, {
+      apiRepository.addActivity(id, {
         name: String(f.get("name")),
         category: f.get("category") as "SAMPLING" | "PHOTO_BOOTH",
         maxClaimsPerUser: Number(f.get("max")),
@@ -71,7 +72,7 @@ export default function EventDetailPage() {
     ev.preventDefault();
     const f = new FormData(ev.currentTarget);
     void act(async () => {
-      const p = await demoRepository.addStaff(id, {
+      const p = await apiRepository.addStaff(id, {
         label: String(f.get("label")),
         canCheckIn: f.has("checkIn"),
         allowedActivityIds: f.getAll("activities").map(String),
@@ -239,7 +240,7 @@ export default function EventDetailPage() {
                     variant="ghost"
                     disabled={mutation.isPending}
                     onClick={() =>
-                      void act(() => demoRepository.toggleActivity(id, a.id))
+                      void act(() => apiRepository.toggleActivity(id, a.id))
                     }
                   >
                     {a.isActive ? es.detail.deactivate : es.detail.activate}
@@ -293,7 +294,7 @@ export default function EventDetailPage() {
                     variant="secondary"
                     disabled={mutation.isPending}
                     onClick={() =>
-                      void act(() => demoRepository.revoke(id, s.id))
+                      void act(() => apiRepository.revoke(id, s.id))
                     }
                   >
                     {es.form.revoke}
@@ -322,7 +323,7 @@ export default function EventDetailPage() {
                 ev.preventDefault();
                 const f = new FormData(ev.currentTarget);
                 void act(() =>
-                  demoRepository.campaign(id, {
+                  apiRepository.campaign(id, {
                     codePrefix: String(f.get("prefix")),
                     discountLabel: String(f.get("discount")),
                     policy: f.get("policy") as Campaign["policy"],
@@ -501,7 +502,7 @@ export default function EventDetailPage() {
         <Button
           disabled={mutation.isPending}
           onClick={() =>
-            target && void act(() => demoRepository.transition(id, target))
+            target && void act(() => apiRepository.transition(id, target))
           }
         >
           {uiText.eventDetailPage20}

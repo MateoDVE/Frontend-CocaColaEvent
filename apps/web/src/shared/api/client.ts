@@ -10,19 +10,33 @@ export async function apiRequest<T>(
   options: RequestInit = {},
   accessToken?: string,
 ): Promise<T> {
-  const base = import.meta.env.VITE_API_URL;
-  if (!base) throw new ApiError("NETWORK_ERROR");
-  const response = await fetch(`${base}${path}`, {
-    ...options,
-    credentials: "include",
-    signal: options.signal ?? AbortSignal.timeout(4000),
-    headers: {
-      "Content-Type": "application/json",
-      ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
-      ...options.headers,
-    },
-  });
-  const body = (await response.json()) as ApiEnvelope<T>;
-  if (!response.ok || !body.success) throw new ApiError(body.code);
-  return body.data;
+  const base = import.meta.env.VITE_API_URL || "/api/v1";
+  try {
+    const response = await fetch(`${base}${path}`, {
+      ...options,
+      credentials: "include",
+      signal: options.signal ?? AbortSignal.timeout(6000),
+      headers: {
+        "Content-Type": "application/json",
+        ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+        ...options.headers,
+      },
+    });
+
+    let body: any;
+    try {
+      body = await response.json();
+    } catch {
+      throw new ApiError(response.ok ? "OK" : "INTERNAL_ERROR");
+    }
+
+    if (!response.ok || (body && body.success === false)) {
+      throw new ApiError(body?.code || "INTERNAL_ERROR");
+    }
+
+    return (body && typeof body === "object" && "data" in body ? body.data : body) as T;
+  } catch (err: any) {
+    if (err instanceof ApiError) throw err;
+    throw new ApiError("NETWORK_ERROR");
+  }
 }

@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
-import { demoRepository } from "../../shared/demo";
+import { apiRepository } from "../../shared/api";
 export const useFeedback = (id: string) =>
   useQuery({
     queryKey: ["feedback", id],
-    queryFn: () => demoRepository.feedback(id),
+    queryFn: () => apiRepository.feedback(id),
   });

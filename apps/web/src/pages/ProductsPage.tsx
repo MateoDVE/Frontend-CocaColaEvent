@@ -3,15 +3,15 @@ import { useState } from "react";
 import { Plus, Package, Search } from "lucide-react";
 import { useProducts } from "../features/catalog";
 import { useDemoMutation } from "../features/event-management";
-import { demoRepository } from "../shared/demo";
+import { apiRepository } from "../shared/api";
 import { Button, Modal, Loading, ErrorState, Empty } from "../shared/ui";
 import { es } from "../shared/i18n";
 export default function ProductsPage() {
   const query = useProducts();
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
-  const mutation = useDemoMutation(demoRepository.addProduct);
-  const toggle = useDemoMutation(demoRepository.toggleProduct);
+  const mutation = useDemoMutation(apiRepository.addProduct);
+  const toggle = useDemoMutation(apiRepository.toggleProduct);
   const rows =
     query.data?.filter((p) =>
       `${p.name} ${p.sku}`.toLowerCase().includes(search.toLowerCase()),

@@ -1,11 +1,11 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { demoRepository } from "../../shared/demo";
+import { apiRepository } from "../../shared/api";
 export const useEvents = () =>
-  useQuery({ queryKey: ["events"], queryFn: demoRepository.listEvents });
+  useQuery({ queryKey: ["events"], queryFn: apiRepository.listEvents });
 export const useEvent = (id: string) =>
   useQuery({
     queryKey: ["events", id],
-    queryFn: () => demoRepository.event(id),
+    queryFn: () => apiRepository.event(id),
   });
 export function useDemoMutation<T, R>(action: (input: T) => Promise<R>) {
   const client = useQueryClient();

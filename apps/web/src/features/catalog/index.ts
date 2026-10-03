@@ -1,4 +1,4 @@
 import { useQuery } from "@tanstack/react-query";
-import { demoRepository } from "../../shared/demo";
+import { apiRepository } from "../../shared/api";
 export const useProducts = () =>
-  useQuery({ queryKey: ["products"], queryFn: demoRepository.products });
+  useQuery({ queryKey: ["products"], queryFn: apiRepository.products });

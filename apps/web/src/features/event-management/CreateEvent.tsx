@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { EventInputSchema, eventTypes } from "@cocacola-ei/contracts";
 import { useDemoMutation } from "./index";
-import { demoRepository } from "../../shared/demo";
+import { apiRepository } from "../../shared/api";
 import { es } from "../../shared/i18n";
 import { Button, Modal } from "../../shared/ui";
 type Form = {
@@ -28,7 +28,7 @@ export function CreateEvent({
     defaultValues: { type: "FESTIVAL", capacity: 1000, attendanceGoal: 800 },
   });
   const navigate = useNavigate();
-  const mutation = useDemoMutation(demoRepository.createEvent);
+  const mutation = useDemoMutation(apiRepository.createEvent);
   async function submit(values: Form) {
     const parsed = EventInputSchema.safeParse({
       ...values,

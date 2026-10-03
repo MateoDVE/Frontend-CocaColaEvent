@@ -29,6 +29,7 @@ import { Camera } from "../features/scanning";
 import { demoEventId, demoScanner } from "../shared/demo";
 import { Button, Loading, ErrorState } from "../shared/ui";
 import { es } from "../shared/i18n";
+import { apiRequest } from "../shared/api";
 import { time } from "../shared/lib";
 export default function StaffPage() {
   const location = useLocation();
@@ -52,19 +53,57 @@ export default function StaffPage() {
     (activityId
       ? !!activity?.isActive && staff.allowedActivityIds.includes(activityId)
       : staff.canCheckIn);
-  function validate(value: string) {
+  async function validate(value: string) {
     if (!online || !allowed || !query.data || !staff || result) return;
-    const r = demoScanner.scan(
-      {
-        qrToken: value.trim(),
-        clientScanId: crypto.randomUUID(),
-        scannedAt: new Date().toISOString(),
-        activityId,
-        productId: product || undefined,
-      },
-      query.data,
-      staff,
-    );
+    const qrToken = value.trim();
+    const clientScanId = crypto.randomUUID();
+    const scannedAt = new Date().toISOString();
+
+    let r: ScanResponse;
+    try {
+      if (activityId) {
+        r = await apiRequest<ScanResponse>(
+          "/scan/sampling",
+          {
+            method: "POST",
+            body: JSON.stringify({
+              qrToken,
+              activityId,
+              productId: product || undefined,
+              clientScanId,
+              scannedAt,
+            }),
+          },
+          session.staffToken || undefined,
+        );
+      } else {
+        r = await apiRequest<ScanResponse>(
+          "/scan/check-in",
+          {
+            method: "POST",
+            body: JSON.stringify({
+              qrToken,
+              clientScanId,
+              scannedAt,
+            }),
+          },
+          session.staffToken || undefined,
+        );
+      }
+    } catch {
+      r = demoScanner.scan(
+        {
+          qrToken,
+          clientScanId,
+          scannedAt,
+          activityId,
+          productId: product || undefined,
+        },
+        query.data,
+        staff,
+      );
+    }
+
     setResult(r);
     navigator.vibrate?.(
       scanTone(r.code) === "success"
@@ -88,15 +127,33 @@ export default function StaffPage() {
         <p>{es.staffPage.demoWarning}</p>
         <form
           className="panel"
-          onSubmit={(ev) => {
+          onSubmit={async (ev) => {
             ev.preventDefault();
             const f = new FormData(ev.currentTarget);
-            if (f.get("code") !== "LOLLA26" || f.get("pin") !== "123456") {
-              setLoginError(true);
-              return;
+            const code = String(f.get("code") || "").trim().toUpperCase();
+            const pin = String(f.get("pin") || "").trim();
+
+            try {
+              const res = await apiRequest<{
+                staffToken: string;
+                event: any;
+                staffAccess: any;
+                activities: any[];
+              }>("/auth/staff/login", {
+                method: "POST",
+                body: JSON.stringify({ eventCode: code, pin }),
+              });
+
+              session.setStaffSession(res.staffToken, res);
+              navigate("/staff/mode");
+            } catch {
+              if (code === "LOLLA26" && pin === "123456") {
+                session.startStaff();
+                navigate("/staff/mode");
+              } else {
+                setLoginError(true);
+              }
             }
-            session.startStaff();
-            navigate("/staff/mode");
           }}
         >
           <label>
